@@ -18,6 +18,7 @@ package org.powertac.genco
  
 import org.joda.time.Instant
 
+import org.powertac.common.Timeslot
 import org.powertac.common.interfaces.TimeslotPhaseProcessor
 
 class SimpleGencoService
@@ -34,6 +35,10 @@ class SimpleGencoService
   void activate(Instant now, int phase)
   {
     Random gen = ensureRandomSeed()
+    def gencoList = GenCo.list() 
+    gencoList*.updateModel(gen, now)
+    def openSlots = Timeslot.enabledTimeslots()
+    gencoList*.generateBids(gen, now, openSlots)
   }
   
   def serviceMethod() {

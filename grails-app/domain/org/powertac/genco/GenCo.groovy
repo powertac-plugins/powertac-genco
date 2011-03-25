@@ -17,7 +17,11 @@ package org.powertac.genco
 
 import org.joda.time.Instant
 
+import org.powertac.common.Broker
+import org.powertac.common.Shout
+import org.powertac.common.Timeslot
 import org.powertac.common.MarketPosition
+import org.powertac.common.enumerations.BuySellIndicator
 
 /**
  * Represents a producer of power in the transmission domain. Individual
@@ -27,7 +31,9 @@ import org.powertac.common.MarketPosition
  */
 class GenCo
 {
-
+  /** Name of this GenCo */
+  String name
+  
   /** Nominal capacity of this producer in mW */
   Double nominalCapacity = 10.0
   
@@ -59,11 +65,14 @@ class GenCo
   /** True if this is a renewable source */
   Boolean renewable = false
   
+  Broker broker
+  
   static hasMany = [commitments: MarketPosition] 
   
   static constraints = {
+    name(nullable: false)
   }
-  
+
   /**
    * Updates this model for the current timeslot, by adjusting
    * capacity, checking for downtime, and creating exogenous
@@ -73,6 +82,40 @@ class GenCo
   {
     updateCapacity(gen.nextDouble())
     updateInOperation(gen.nextDouble())
+  }
+  
+  /**
+   * Generates Shouts in the market to sell available capacity
+   */
+  void generateBids (Random gen, Instant now, List<Timeslot> openSlots)
+  {
+    ensureBroker()
+    openSlots.each { slot ->
+      MarketPosition posn = MarketPosition.findByBrokerAndTimeslot(broker, slot)
+      // posn.overallBalance is negative if we have sold power in this slot
+      double availableCapacity = currentCapacity + posn.overallBalance
+      if (availableCapacity > 0.0) {
+        // make an offer to sell
+        Shout offer =
+            new Shout(broker: broker, timeslot: slot,
+                      buySellIndicator: BuySellIndicator.SELL,
+                      quantity: availableCapacity,
+                      limitPrice: cost)
+        shout.save()
+        broker.addToShouts(shout)
+        broker.save()
+        // TODO - send to market somehow
+      }
+    }
+  }
+  
+  private void ensureBroker ()
+  {
+    if (broker == null) {
+      broker = new Broker(name: name, local: true)
+      broker.save()
+      this.save()
+    }  
   }
   
   private void updateCapacity (double val)
