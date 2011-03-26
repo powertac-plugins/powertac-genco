@@ -44,7 +44,7 @@ class GenCo
   Double variability = 0.01
   
   /** Mean-reversion tendency - portion of variability to revert
-   * back to nominal capacity */
+   *  back to nominal capacity */
   Double meanReversion = 0.2
   
   /** Cost per mWh */
@@ -65,7 +65,7 @@ class GenCo
   /** True if this is a renewable source */
   Boolean renewable = false
   
-  Broker broker
+  Broker broker // dummy broker for mkt interaction
   
   static hasMany = [commitments: MarketPosition] 
   
@@ -112,12 +112,12 @@ class GenCo
   private void ensureBroker ()
   {
     if (broker == null) {
-      broker = new Broker(name: name, local: true)
+      broker = new Broker(username: name, local: true)
       broker.save()
       this.save()
-    }  
+    }
   }
-  
+
   private void updateCapacity (double val)
   {
     if (variability > 0.0) {
@@ -130,7 +130,7 @@ class GenCo
   
   private void updateInOperation (double val)
   {
-    if (val < reliability) {
+    if (val > reliability) {
       inOperation = false
     }
     else {

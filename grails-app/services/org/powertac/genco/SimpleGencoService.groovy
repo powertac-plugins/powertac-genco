@@ -28,7 +28,7 @@ class SimpleGencoService
   static transactional = true
   
   def timeService // autowire
-  def randomSeedService
+  def randomSeedService // autowire
   
   Random randomGen = null
 
