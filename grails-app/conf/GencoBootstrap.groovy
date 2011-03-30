@@ -1,6 +1,6 @@
 import org.powertac.genco.GenCo
 
-class BootStrap {
+class GenCoBootStrap {
   
   def competitionControlService
   def simpleGencoService
@@ -19,8 +19,8 @@ class BootStrap {
     genco = new GenCo(name: 'gas2', nominalCapacity: 30, 
                       variability: 0.03, cost: 5.5, commitmentLeadtime: 0)
     genco.save()
-    
-    competitionControlService.registerTimeslotPhase(simpleGencoService, 1)
+
+    //competitionControlService.registerTimeslotPhase(simpleGencoService, 1)
   }
   def destroy = {
   }

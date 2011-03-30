@@ -71,6 +71,7 @@ class GenCo
   
   static constraints = {
     name(nullable: false)
+    broker(nullable: true) // ok for initialization since there is ensureBroker()
   }
 
   /**
