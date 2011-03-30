@@ -80,6 +80,7 @@ class GenCo
    */
   void updateModel (Random gen, Instant currentTime)
   {
+    log.info 'Update $name'
     updateCapacity(gen.nextDouble())
     updateInOperation(gen.nextDouble())
   }

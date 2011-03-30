@@ -34,15 +34,12 @@ class SimpleGencoService
 
   void activate(Instant now, int phase)
   {
+    log.info "Activate"
     Random gen = ensureRandomSeed()
     def gencoList = GenCo.list() 
     gencoList*.updateModel(gen, now)
     def openSlots = Timeslot.enabledTimeslots()
     gencoList*.generateBids(gen, now, openSlots)
-  }
-  
-  def serviceMethod() {
-
   }
   
   private Random ensureRandomSeed ()
