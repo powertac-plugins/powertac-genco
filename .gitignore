@@ -6,11 +6,10 @@
 
 # Deployment directories
 target/
-web-app/WEB-INF/classes/
-grails-app/i18n/
-.settings/
+activemq-data/
+logs/
 
-# OS generated files 
+# OS generated files
 .DS_Store?
 .DS_Store
 ehthumbs.db
