@@ -29,9 +29,15 @@ class SimpleGencoService
   
   def timeService // autowire
   def randomSeedService // autowire
+  def competitionControlService
   
   Random randomGen = null
 
+  void init()
+  {
+    competitionControlService.registerTimeslotPhase(this, 1)
+  }
+  
   void activate(Instant now, int phase)
   {
     log.info "Activate"
@@ -45,7 +51,7 @@ class SimpleGencoService
   private Random ensureRandomSeed ()
   {
     if (randomGen == null) {
-      long randomSeed = randomSeedService.nextSeed(this.class, 'genco', 'model')
+      long randomSeed = randomSeedService.nextSeed('SimpleGencoService', 'genco', 'model')
       randomGen = new Random(randomSeed)
     }
     return randomGen

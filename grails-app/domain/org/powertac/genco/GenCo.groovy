@@ -81,7 +81,7 @@ class GenCo
    */
   void updateModel (Random gen, Instant currentTime)
   {
-    log.info 'Update $name'
+    log.info "Update ${name}"
     updateCapacity(gen.nextDouble())
     updateInOperation(gen.nextDouble())
   }
@@ -92,8 +92,12 @@ class GenCo
   void generateBids (Random gen, Instant now, List<Timeslot> openSlots)
   {
     ensureBroker()
-    openSlots.each { slot ->
+    openSlots?.each { slot ->
       MarketPosition posn = MarketPosition.findByBrokerAndTimeslot(broker, slot)
+      if (posn == null) {
+        //log.warn "market position null for ${slot}"
+        return
+      }
       // posn.overallBalance is negative if we have sold power in this slot
       double availableCapacity = currentCapacity + posn.overallBalance
       if (availableCapacity > 0.0) {

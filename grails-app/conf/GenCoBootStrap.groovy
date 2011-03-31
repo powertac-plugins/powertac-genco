@@ -2,7 +2,6 @@ import org.powertac.genco.GenCo
 
 class GenCoBootStrap {
   
-  def competitionControlService
   def simpleGencoService
 
   def init = { servletContext ->
@@ -20,7 +19,7 @@ class GenCoBootStrap {
                       variability: 0.03, cost: 5.5, commitmentLeadtime: 0)
     genco.save()
 
-    //competitionControlService.registerTimeslotPhase(simpleGencoService, 1)
+    //simpleGencoService.init()
   }
   def destroy = {
   }
