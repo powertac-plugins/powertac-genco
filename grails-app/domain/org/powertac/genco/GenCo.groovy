@@ -18,6 +18,7 @@ package org.powertac.genco
 import org.joda.time.Instant
 
 import org.powertac.common.Broker
+import org.powertac.common.PluginConfig;
 import org.powertac.common.Shout
 import org.powertac.common.Timeslot
 import org.powertac.common.MarketPosition
@@ -31,14 +32,11 @@ import org.powertac.common.enumerations.BuySellIndicator
  */
 class GenCo
 {
-  /** Name of this GenCo */
-  String name
-  
-  /** Nominal capacity of this producer in mW */
-  Double nominalCapacity = 10.0
+  /** Public config data */
+  PluginConfig config
   
   /** Current capacity of this producer in mW */
-  Double currentCapacity = nominalCapacity
+  Double currentCapacity
   
   /** Per-timeslot variability */
   Double variability = 0.01
@@ -47,17 +45,11 @@ class GenCo
    *  back to nominal capacity */
   Double meanReversion = 0.2
   
-  /** Cost per mWh */
-  BigDecimal cost = 4.0
-  
   /** True if plant is currently operating */
   Boolean inOperation = true
   
   /** Proportion of time plant is working */
   Double reliability = 0.98
-  
-  /** Leadtime for commitment, in hours */
-  Integer commitmentLeadtime = 0
   
   /** Carbon emission rate in kg/kWh */
   BigDecimal carbonEmissionRate = 0.5
@@ -70,10 +62,12 @@ class GenCo
   static hasMany = [commitments: MarketPosition] 
   
   static constraints = {
-    name(nullable: false)
+    config(nullable: false)
     broker(nullable: true) // ok for initialization since there is ensureBroker()
   }
-
+  
+  static transients = ['name', 'nominalCapacity', 'cost', 'commitmentLeadTime', 'carbonEmissionRate']
+  
   /**
    * Updates this model for the current timeslot, by adjusting
    * capacity, checking for downtime, and creating exogenous
@@ -142,5 +136,31 @@ class GenCo
     else {
       inOperation = true
     }
+  }
+
+  // ------------------ configuration access methods -------------------
+  private String getName ()
+  {
+    return config.name
+  }
+  
+  private getNominalCapacity ()
+  {
+    return config.configuration['nominalCapacity'].toBigDecimal()
+  }
+
+  private getCost ()
+  {
+    return config.configuration['cost'].toBigDecimal()
+  }
+  
+  private getCommitmentLeadTime ()
+  {
+    return config.configuration['commitmentLeadTime'].toInteger()
+  }
+  
+  private getCarbonEmissionRate ()
+  {
+    return config.configuration['carbonEmissionRate'].toDouble()
   }
 }

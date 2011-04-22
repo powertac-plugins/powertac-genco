@@ -17,12 +17,11 @@ class GencoServiceTests extends GrailsUnitTestCase
   protected void setUp() 
   {
     super.setUp()
-    genco = new GenCo(name: 'MunicipalPower')
-    genco.ensureBroker()
+    def factory = new GencoFactory()
+    genco = factory.build('MunicipalPower', 10, 0.01, 3.0, 8, 1.0)
     if (!genco.validate()) {
       genco.errors.allErrors.each { println it.toString() }
     }
-    assert genco.save()
     start = new DateTime(2011, 1, 1, 12, 0, 0, 0, DateTimeZone.UTC).toInstant()
     timeService.setCurrentTime(start)
   }
@@ -64,6 +63,6 @@ class GencoServiceTests extends GrailsUnitTestCase
     assertTrue("in operation", genco.inOperation)
     genco.updateModel(mockRandom, start)
     assertEquals("current capacity", 10.1, genco.currentCapacity, 1e-6)
-    assertFalse("still in operation", genco.inOperation)
+    assertFalse("shut down", genco.inOperation)
   }
 }
