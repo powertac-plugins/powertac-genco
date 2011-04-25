@@ -63,7 +63,7 @@ class GenCo
   
   static constraints = {
     config(nullable: false)
-    broker(nullable: true) // ok for initialization since there is ensureBroker()
+    broker(nullable: false)
   }
   
   static transients = ['name', 'nominalCapacity', 'cost', 'commitmentLeadTime', 'carbonEmissionRate']
@@ -85,7 +85,6 @@ class GenCo
    */
   void generateBids (Random gen, Instant now, List<Timeslot> openSlots)
   {
-    ensureBroker()
     openSlots?.each { slot ->
       MarketPosition posn = MarketPosition.findByBrokerAndTimeslot(broker, slot)
       if (posn == null) {
@@ -106,15 +105,6 @@ class GenCo
         broker.save()
         // TODO - send to market somehow
       }
-    }
-  }
-  
-  private void ensureBroker ()
-  {
-    if (broker == null) {
-      broker = new Broker(username: name, local: true)
-      broker.save()
-      this.save()
     }
   }
 

@@ -13,30 +13,35 @@
  * either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
-import org.powertac.common.Broker
-import org.powertac.common.PluginConfig
-import org.powertac.genco.GenCo
-import org.powertac.genco.GencoFactory
+package org.powertac.genco
 
-/**
- * Genco configuration. Public data goes in the PluginConfig instances, private data goes
- * directly into the GenCo instances.
- * @author John Collins
- */
-class GenCoBootStrap {
+import java.util.List;
+
+import org.powertac.common.Competition;
+import org.powertac.common.interfaces.InitializationService
+
+class GencoInitializationService 
+    implements InitializationService
+{
+  static transactional = true
   
   def simpleGencoService
 
-  def init = { servletContext ->
-    // create some GenCo instances
+  @Override
+  public void setDefaults ()
+  {
     def factory = new GencoFactory()
     factory.build('nsp1', 100, 0.05, 3.0, 8, 1.0)
     factory.build('nsp2', 60, 0.05, 3.8, 8, 1.0)
     factory.build('gas1', 40, 0.03, 5.0, 1, 0.5)
-    factory.build('gas2', 30, 0.03, 5.5, 0, 0.5)
+    factory.build('gas2', 30, 0.03, 5.5, 0, 0.5)    
+  }
 
-    //simpleGencoService.init()
+  @Override
+  public String initialize (Competition competition, List<String> completedInits)
+  {
+    simpleGencoService.init()
+    return 'Genco'
   }
-  def destroy = {
-  }
+
 }
