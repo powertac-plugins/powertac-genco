@@ -15,9 +15,9 @@
  */
 package org.powertac.genco
 
-import java.util.List;
-
+import org.powertac.common.Broker
 import org.powertac.common.Competition;
+import org.powertac.common.PluginConfig
 import org.powertac.common.interfaces.InitializationService
 
 class GencoInitializationService 
@@ -30,11 +30,10 @@ class GencoInitializationService
   @Override
   public void setDefaults ()
   {
-    def factory = new GencoFactory()
-    factory.build('nsp1', 100, 0.05, 3.0, 8, 1.0)
-    factory.build('nsp2', 60, 0.05, 3.8, 8, 1.0)
-    factory.build('gas1', 40, 0.03, 5.0, 1, 0.5)
-    factory.build('gas2', 30, 0.03, 5.5, 0, 0.5)    
+    build('nsp1', 100, 0.05, 3.0, 8, 1.0)
+    build('nsp2', 60, 0.05, 3.8, 8, 1.0)
+    build('gas1', 40, 0.03, 5.0, 1, 0.5)
+    build('gas2', 30, 0.03, 5.5, 0, 0.5)    
   }
 
   @Override
@@ -44,4 +43,23 @@ class GencoInitializationService
     return 'Genco'
   }
 
+  GenCo build (String name, BigDecimal nominalCapacity, Double variability, BigDecimal cost,
+               Integer commitmentLeadTime, Double carbonEmissionRate)
+  {
+    GenCo genco = new GenCo(variability: variability, currentCapacity: nominalCapacity)
+    PluginConfig config = new PluginConfig(roleName:'genco', name: name,
+        configuration: ['nominalCapacity': nominalCapacity.toString(), 'cost': cost.toString(),
+                        'commitmentLeadtime': commitmentLeadTime.toString(),
+                        'carbonEmissionRate': carbonEmissionRate.toString()])
+    config.save()
+    genco.config = config
+    Broker face = new Broker(username: name, local: true)
+    if (!face.validate()) {
+      face.errors.allErrors.each {log.error(it.toString())}
+    }
+    face.save()
+    genco.broker = face
+    genco.save()
+    return genco
+  }
 }
