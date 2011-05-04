@@ -42,10 +42,10 @@ class SimpleGencoService
   {
     log.info "Activate"
     Random gen = ensureRandomSeed()
-    def gencoList = GenCo.list() 
+    List<GenCo> gencoList = GenCo.list() 
     gencoList*.updateModel(gen, now)
-    def openSlots = Timeslot.enabledTimeslots()
-    gencoList*.generateBids(gen, now, openSlots)
+    List<Timeslot> openSlots = Timeslot.enabledTimeslots()
+    gencoList*.generateShouts(gen, now, openSlots)
   }
   
   private Random ensureRandomSeed ()
