@@ -8,6 +8,7 @@ import org.joda.time.Instant
 class GencoServiceTests extends GrailsUnitTestCase 
 {
   def simpleGencoService
+  def gencoInitializationService
   def timeService
   
   Instant start
@@ -17,8 +18,7 @@ class GencoServiceTests extends GrailsUnitTestCase
   protected void setUp() 
   {
     super.setUp()
-    def factory = new GencoFactory()
-    genco = factory.build('MunicipalPower', 10, 0.01, 3.0, 8, 1.0)
+    genco = gencoInitializationService.build('MunicipalPower', 10, 0.01, 3.0, 8, 1.0)
     if (!genco.validate()) {
       genco.errors.allErrors.each { println it.toString() }
     }

@@ -51,9 +51,6 @@ class GenCo
   /** Proportion of time plant is working */
   Double reliability = 0.98
   
-  /** Carbon emission rate in kg/kWh */
-  BigDecimal carbonEmissionRate = 0.5
-  
   /** True if this is a renewable source */
   Boolean renewable = false
   
@@ -65,7 +62,14 @@ class GenCo
     config(nullable: false)
     broker(nullable: false)
   }
-  
+
+  // public configured parameters  
+  String name
+  BigDecimal nominalCapacity = 100.0
+  BigDecimal cost = 1.0
+  Integer commitmentLeadtime = 1
+  Double carbonEmissionRate = 0.0 
+
   static transients = ['name', 'nominalCapacity', 'cost', 'commitmentLeadTime', 'carbonEmissionRate']
   
   /**
@@ -83,7 +87,7 @@ class GenCo
   /**
    * Generates Shouts in the market to sell available capacity
    */
-  void generateBids (Random gen, Instant now, List<Timeslot> openSlots)
+  void generateShouts (Random gen, Instant now, List<Timeslot> openSlots)
   {
     openSlots?.each { slot ->
       MarketPosition posn = MarketPosition.findByBrokerAndTimeslot(broker, slot)
@@ -129,28 +133,32 @@ class GenCo
   }
 
   // ------------------ configuration access methods -------------------
-  private String getName ()
+  void configure (PluginConfig config)
   {
-    return config.name
+    this.config = config
+    name = config.name
+    nominalCapacity = 
+      getValidConfig(config, 'nominalCapacity', 
+                     nominalCapacity.toString()).toBigDecimal()
+    cost =  
+      getValidConfig(config, 'cost', cost.toString()).toBigDecimal()
+    commitmentLeadtime = 
+      getValidConfig(config, 'commitmentLeadtime', 
+                     commitmentLeadtime.toString()).toInteger()
+    carbonEmissionRate = 
+      getValidConfig(config, 'carbonEmissionRate', 
+                     carbonEmissionRate.toString()).toDouble()
   }
   
-  private getNominalCapacity ()
+  String getValidConfig (PluginConfig config, String name, String defaultValue)
   {
-    return config.configuration['nominalCapacity'].toBigDecimal()
-  }
-
-  private getCost ()
-  {
-    return config.configuration['cost'].toBigDecimal()
-  }
-  
-  private getCommitmentLeadTime ()
-  {
-    return config.configuration['commitmentLeadTime'].toInteger()
-  }
-  
-  private getCarbonEmissionRate ()
-  {
-    return config.configuration['carbonEmissionRate'].toDouble()
+    String result = config.configuration[name]
+    if (result == null) {
+      log.error "No config value for ${name}: using ${defaultValue}"
+      return defaultValue
+    }
+    else {
+      return result
+    }
   }
 }
