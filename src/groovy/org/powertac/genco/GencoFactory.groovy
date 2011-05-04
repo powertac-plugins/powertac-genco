@@ -33,6 +33,8 @@ class GencoFactory
                         'commitmentLeadtime': commitmentLeadTime.toString(),
                         'carbonEmissionRate': carbonEmissionRate.toString()])
     config.save()
+    
+    // should be in initialize phase? Does it matter?
     genco.config = config
     genco.broker = new Broker(username: name, local: true)
     genco.broker.save()
