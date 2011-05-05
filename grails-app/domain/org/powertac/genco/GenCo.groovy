@@ -87,16 +87,17 @@ class GenCo
   /**
    * Generates Shouts in the market to sell available capacity
    */
-  void generateShouts (Random gen, Instant now, List<Timeslot> openSlots)
+  void generateShouts (Random gen, Instant now, 
+                       List<Timeslot> openSlots,
+                       auctionService)
   {
     openSlots?.each { slot ->
+      double availableCapacity = currentCapacity
       MarketPosition posn = MarketPosition.findByBrokerAndTimeslot(broker, slot)
-      if (posn == null) {
-        //log.warn "market position null for ${slot}"
-        return
+      if (posn != null) {
+        // posn.overallBalance is negative if we have sold power in this slot
+        availableCapacity += posn.overallBalance
       }
-      // posn.overallBalance is negative if we have sold power in this slot
-      double availableCapacity = currentCapacity + posn.overallBalance
       if (availableCapacity > 0.0) {
         // make an offer to sell
         Shout offer =
@@ -104,10 +105,10 @@ class GenCo
                       buySellIndicator: BuySellIndicator.SELL,
                       quantity: availableCapacity,
                       limitPrice: cost)
-        shout.save()
-        broker.addToShouts(shout)
+        offer.save()
+        broker.addToShouts(offer)
         broker.save()
-        // TODO - send to market somehow
+        auctionService?.processShout(offer)
       }
     }
   }

@@ -30,6 +30,7 @@ class SimpleGencoService
   def timeService // autowire
   def randomSeedService // autowire
   def competitionControlService
+  def auctionService
   
   Random randomGen = null
 
@@ -45,7 +46,7 @@ class SimpleGencoService
     List<GenCo> gencoList = GenCo.list() 
     gencoList*.updateModel(gen, now)
     List<Timeslot> openSlots = Timeslot.enabledTimeslots()
-    gencoList*.generateShouts(gen, now, openSlots)
+    gencoList*.generateShouts(gen, now, openSlots, auctionService)
   }
   
   private Random ensureRandomSeed ()
