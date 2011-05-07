@@ -23,6 +23,7 @@ import org.powertac.common.Shout
 import org.powertac.common.Timeslot
 import org.powertac.common.MarketPosition
 import org.powertac.common.enumerations.BuySellIndicator
+import org.powertac.common.enumerations.ProductType
 
 /**
  * Represents a producer of power in the transmission domain. Individual
@@ -70,8 +71,6 @@ class GenCo
   Integer commitmentLeadtime = 1
   Double carbonEmissionRate = 0.0 
 
-  static transients = ['name', 'nominalCapacity', 'cost', 'commitmentLeadTime', 'carbonEmissionRate']
-  
   /**
    * Updates this model for the current timeslot, by adjusting
    * capacity, checking for downtime, and creating exogenous
@@ -102,6 +101,7 @@ class GenCo
         // make an offer to sell
         Shout offer =
             new Shout(broker: broker, timeslot: slot,
+                      product: ProductType.Future,
                       buySellIndicator: BuySellIndicator.SELL,
                       quantity: availableCapacity,
                       limitPrice: cost)
