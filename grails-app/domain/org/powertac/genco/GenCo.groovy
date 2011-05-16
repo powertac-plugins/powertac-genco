@@ -106,8 +106,9 @@ class GenCo
                       quantity: availableCapacity,
                       limitPrice: cost)
         offer.save()
-        broker.addToShouts(offer)
-        broker.save()
+        //broker.addToShouts(offer)
+        //broker.save()
+	//log.info "${name} offers ${availableCapacity} for ${cost}"
         auctionService?.processShout(offer)
       }
     }
