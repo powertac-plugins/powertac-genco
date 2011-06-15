@@ -4,9 +4,9 @@ class PowertacSimpleGencoGrailsPlugin {
     // the version or versions of Grails the plugin is designed for
     def grailsVersion = "1.3.7 > *"
     // the other plugins this plugin depends on
-    def dependsOn = ['powertacCommon':'0.9 > *',
-                     'powertacServerInterface':'0.1 > *',
-                     'powertacRandom': '0.1 > *' ]
+    def dependsOn = ['powertacCommon':'0.10 > *',
+                     'powertacServerInterface':'0.2 > *',
+                     'powertacRandom': '0.2 > *' ]
     // resources that are excluded from plugin packaging
     def pluginExcludes = [
             "grails-app/views/error.gsp"
