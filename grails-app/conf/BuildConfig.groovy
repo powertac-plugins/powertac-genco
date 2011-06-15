@@ -2,6 +2,9 @@ grails.project.class.dir = "target/classes"
 grails.project.test.class.dir = "target/test-classes"
 grails.project.test.reports.dir = "target/test-reports"
 //grails.project.war.file = "target/${appName}-${appVersion}.war"
+grails.plugin.location.PowertacCommon = "../powertac-common"
+grails.plugin.location.PowertacServerInterface = "../powertac-server-interface"
+grails.plugin.location.PowertacRandom = "../powertac-random"
 
 grails.project.dependency.resolution = {
   // inherit Grails' default dependencies
@@ -32,9 +35,6 @@ grails.project.dependency.resolution = {
   }
 
   plugins {
-    build ':joda-time:1.1'
-    build ':powertac-common:0.10'
-    build ':powertac-server-interface:0.2'
-    build ':powertac-random:0.2'
+    build (':joda-time:1.1')
   }
 }
