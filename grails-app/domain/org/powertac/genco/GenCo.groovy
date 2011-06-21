@@ -90,6 +90,7 @@ class GenCo
                        List<Timeslot> openSlots,
                        auctionService)
   {
+    log.info "Generate shouts for $name"
     openSlots?.each { slot ->
       double availableCapacity = currentCapacity
       MarketPosition posn = MarketPosition.findByBrokerAndTimeslot(broker, slot)
@@ -108,7 +109,7 @@ class GenCo
         offer.save()
         //broker.addToShouts(offer)
         //broker.save()
-	//log.info "${name} offers ${availableCapacity} for ${cost}"
+	log.debug "${name} offers ${availableCapacity} in ${slot} for ${cost}"
         auctionService?.processShout(offer)
       }
     }

@@ -46,6 +46,7 @@ class SimpleGencoService
     List<GenCo> gencoList = GenCo.list() 
     gencoList*.updateModel(gen, now)
     List<Timeslot> openSlots = Timeslot.enabledTimeslots()
+    log.debug "generateShouts"
     gencoList*.generateShouts(gen, now, openSlots, auctionService)
   }
   
