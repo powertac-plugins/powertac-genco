@@ -37,25 +37,24 @@ class SimpleGencoService
   void init()
   {
     competitionControlService.registerTimeslotPhase(this, 1)
+    getRandomSeed()
   }
   
   void activate(Instant now, int phase)
   {
     log.info "Activate"
-    Random gen = ensureRandomSeed()
     List<GenCo> gencoList = GenCo.list() 
-    gencoList*.updateModel(gen, now)
+    gencoList*.updateModel(randomGen, now)
     List<Timeslot> openSlots = Timeslot.enabledTimeslots()
     log.debug "generateShouts"
-    gencoList*.generateShouts(gen, now, openSlots, auctionService)
+    gencoList*.generateShouts(randomGen, now, openSlots, auctionService)
   }
   
-  private Random ensureRandomSeed ()
+  private void getRandomSeed ()
   {
     if (randomGen == null) {
       long randomSeed = randomSeedService.nextSeed('SimpleGencoService', 'genco', 'model')
       randomGen = new Random(randomSeed)
     }
-    return randomGen
   }
 }

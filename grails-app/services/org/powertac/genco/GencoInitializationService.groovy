@@ -30,10 +30,10 @@ class GencoInitializationService
   @Override
   public void setDefaults ()
   {
-    build('nsp1', 100.0, 0.05, 3.0, 8, 1.0)
-    build('nsp2', 60.0, 0.05, 3.8, 8, 1.0)
-    build('gas1', 40.0, 0.03, 5.0, 1, 0.5)
-    build('gas2', 30.0, 0.03, 5.5, 0, 0.5)    
+    build('nsp1', 100.0, 0.05, 20.0, 8, 1.0)
+    build('nsp2', 60.0, 0.05, 21.8, 8, 1.0)
+    build('gas1', 40.0, 0.03, 35.0, 1, 0.5)
+    build('gas2', 30.0, 0.03, 38.5, 0, 0.5)    
   }
 
   @Override
@@ -53,7 +53,7 @@ class GencoInitializationService
                         'carbonEmissionRate': carbonEmissionRate.toString()])
     config.save()
     genco.configure(config)
-    Broker face = new Broker(username: name, local: true)
+    Broker face = new Broker(username: name, local: true, wholesale: true)
     if (!face.validate()) {
       face.errors.allErrors.each {log.error(it.toString())}
     }
