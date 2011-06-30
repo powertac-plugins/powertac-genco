@@ -106,7 +106,7 @@ class GenCo
                       buySellIndicator: BuySellIndicator.SELL,
                       quantity: availableCapacity,
                       limitPrice: cost)
-        offer.save()
+        //offer.save()
         //broker.addToShouts(offer)
         //broker.save()
 	log.debug "${name} offers ${availableCapacity} in ${slot} for ${cost}"
