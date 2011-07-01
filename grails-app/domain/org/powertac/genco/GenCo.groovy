@@ -110,7 +110,7 @@ class GenCo
         //broker.addToShouts(offer)
         //broker.save()
 	log.debug "${name} offers ${availableCapacity} in ${slot} for ${cost}"
-        auctionService?.processShout(offer)
+        auctionService?.receiveMessage(offer)
       }
     }
   }
