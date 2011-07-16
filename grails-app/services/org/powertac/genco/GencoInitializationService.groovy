@@ -33,7 +33,8 @@ class GencoInitializationService
     build('nsp1', 100.0, 0.05, 20.0, 8, 1.0)
     build('nsp2', 60.0, 0.05, 21.8, 8, 1.0)
     build('gas1', 40.0, 0.03, 35.0, 1, 0.5)
-    build('gas2', 30.0, 0.03, 38.5, 0, 0.5)    
+    build('gas2', 30.0, 0.03, 38.5, 0, 0.5) 
+    build('backup', 20000.0, 0.001, 100.0, 0, 0.8) // backup source   
   }
 
   @Override
