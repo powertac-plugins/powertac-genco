@@ -105,12 +105,12 @@ class GenCo
                       product: ProductType.Future,
                       buySellIndicator: BuySellIndicator.SELL,
                       quantity: availableCapacity,
-                      limitPrice: cost)
-        //offer.save()
+                      limitPrice: new BigDecimal(cost + 0.2*Math.random()*cost))
+        offer.save()
         //broker.addToShouts(offer)
         //broker.save()
 	log.debug "${name} offers ${availableCapacity} in ${slot} for ${cost}"
-        auctionService?.receiveMessage(offer)
+        auctionService?.processShout(offer)
       }
     }
   }
